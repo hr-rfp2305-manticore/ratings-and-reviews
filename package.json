@@ -1,0 +1,24 @@
+{
+  "name": "ratings-and-reviews",
+  "version": "1.0.0",
+  "description": "backend for ratings and reviews section",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hr-rfp2305-manticore/ratings-and-reviews.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hr-rfp2305-manticore/ratings-and-reviews/issues"
+  },
+  "homepage": "https://github.com/hr-rfp2305-manticore/ratings-and-reviews#readme",
+  "dependencies": {
+    "pg": "^8.11.1",
+    "pgtools": "^1.0.0"
+  }
+}
