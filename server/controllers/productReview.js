@@ -33,10 +33,8 @@ exports.getReviewMeta = async (req, res) => {
 exports.postReview = async (req, res) => {
   try {
     await model.addProductReview(req.body);
+    // TODO: add to characteristic
     res.sendStatus(200);
-    // console.log('test', test)
-    // res.status(200).send(test)
-
   } catch (error) {
     console.log(error);
     res.status(400).send(error);

@@ -26,13 +26,18 @@ exports.getReviewMetadata = (product_id) => {
 
 exports.addProductReview = async (data) => {
   // add to mongoDB collection `product_reviews`
-  const latestReview =  await Review.findOne({ product_id: data.product_id }, { results: { $slice: -1 } })
-  const latestReviewId = latestReview.results[0].review_id;
+  // TODO: takes too long to get the latest reviewId
+  const reviewId = await Review.aggregate(
+    [
+      { $unwind: { path: '$results' } },
+      { $count: 'product_id' }
+    ]
+  );
   const {product_id, name, ...review} = data;
 
   return Review.updateOne(
-      { product_id: product_id },
-      { $push: { 'results': { review_id: latestReviewId + 1, reviewer_name: name, ...review } } }
-    );
+    { product_id: product_id },
+    { $push: { results: { review_id: reviewId[0].product_id + 1, reviewer_name: name, ...review } } }
+  );
 }
 
