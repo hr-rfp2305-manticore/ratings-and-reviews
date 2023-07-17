@@ -21,7 +21,7 @@ const reviewSchema = new mongoose.Schema({
       "body": String,
       "date": { type: Date, default: Date.now },
       "reviewer_name": String,
-      "helpfulness": Number,
+      "helpfulness": { type:Number, default: 0 },
       "photos": [
         {
           "id": Number,

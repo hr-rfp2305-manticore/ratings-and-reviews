@@ -41,3 +41,13 @@ exports.postReview = async (req, res) => {
   };
 };
 
+exports.putReviewHelpful = async (req, res) => {
+  const review_id = req.params.review_id;
+  try {
+    await model.markReviewHelpful(review_id);
+    res.sendStatus(204);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send(error);
+  };
+};

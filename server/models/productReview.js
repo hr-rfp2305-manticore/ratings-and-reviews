@@ -39,5 +39,12 @@ exports.addProductReview = async (data) => {
     { product_id: product_id },
     { $push: { results: { review_id: reviewId[0].product_id + 1, reviewer_name: name, ...review } } }
   );
-}
+};
+
+exports.markReviewHelpful = (review_id) => {
+  return Review.updateOne(
+    { results: { $elemMatch: {review_id: review_id } } },
+    { $inc: {'results.$.helpfulness': 1} }
+  );
+};
 
