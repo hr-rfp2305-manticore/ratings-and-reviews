@@ -1,12 +1,12 @@
 const { db, Review, ReviewMetadata } = require('../../database/index.js');
 
 exports.getProductReviews = (product_id) => {
-    return Review.findOne({ product_id: product_id});
+    return Review.findOne({ product_id: product_id });
 };
 
 exports.getSortedReviews = (sort_by_field, number) => {
   if (sort_by_field === 'newest') {
-    return Review.find({}).sort({'_id': -1}).limit(number);
+    return Review.find({}).sort({ '_id': -1 }).limit(number);
   } else if (sort_by_field === 'helpful') {
     /*
     TODO:
@@ -21,5 +21,18 @@ exports.getSortedReviews = (sort_by_field, number) => {
 };
 
 exports.getReviewMetadata = (product_id) => {
-  return ReviewMetadata.find({product_id: product_id})
+  return ReviewMetadata.findOne( { product_id: product_id } )
 }
+
+exports.addProductReview = async (data) => {
+  // add to mongoDB collection `product_reviews`
+  const latestReview =  await Review.findOne({ product_id: data.product_id }, { results: { $slice: -1 } })
+  const latestReviewId = latestReview.results[0].review_id;
+  const {product_id, name, ...review} = data;
+
+  return Review.updateOne(
+      { product_id: product_id },
+      { $push: { 'results': { review_id: latestReviewId + 1, reviewer_name: name, ...review } } }
+    );
+}
+

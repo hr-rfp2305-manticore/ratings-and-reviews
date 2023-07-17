@@ -5,4 +5,6 @@ router.get('/', controller.getReviews);
 
 router.get('/meta', controller.getReviewMeta);
 
+router.post('/', controller.postReview);
+
 module.exports = router;
