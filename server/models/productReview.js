@@ -48,3 +48,10 @@ exports.markReviewHelpful = (review_id) => {
   );
 };
 
+exports.markReviewReported = (review_id) => {
+  return Review.updateOne(
+    { results: { $elemMatch: {review_id: review_id } } },
+    { 'results.$.reported': true }
+  );
+}
+

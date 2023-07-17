@@ -7,6 +7,8 @@ router.get('/meta', controller.getReviewMeta);
 
 router.post('/', controller.postReview);
 
-router.post('/:review_id/helpful', controller.putReviewHelpful);
+router.put('/:review_id/helpful', controller.putReviewHelpful);
+
+router.put('/:review_id/report', controller.putReviewReported);
 
 module.exports = router;
