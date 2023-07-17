@@ -4,7 +4,8 @@
   "description": "backend for ratings and reviews section",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server/index.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,11 @@
   "homepage": "https://github.com/hr-rfp2305-manticore/ratings-and-reviews#readme",
   "dependencies": {
     "csv-parser": "^3.0.0",
-    "mongoose": "^7.3.3"
+    "express": "^4.18.2",
+    "mongoose": "^7.3.3",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }
