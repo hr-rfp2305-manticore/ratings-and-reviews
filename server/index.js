@@ -8,7 +8,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 
 // Set up our routes
-app.use('/test', router);
+app.use('/reviews', router);
 
 const PORT = 3000;
 app.listen(PORT, () => {

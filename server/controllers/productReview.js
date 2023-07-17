@@ -1,7 +1,6 @@
-const models = require('../models/productReview.js');
+const model = require('../models/productReview.js');
 
 exports.getReviews = async (req, res) => {
-  console.log('query: ', req.query)
   let reviews = null;
   const queryParams = Object.keys(req.query);
   const sort_by_field = req.query.sort || 'relevant';
@@ -10,9 +9,9 @@ exports.getReviews = async (req, res) => {
   const number = page * count;
   try {
     if (queryParams.length === 1 && queryParams.includes('product_id')) {
-      reviews = await models.getProductReviews(req.query.product_id);
+      reviews = await model.getProductReviews(req.query.product_id);
     } else {
-      reviews = await models.getSortedReviews(sort_by_field, number);
+      reviews = await model.getSortedReviews('newest', number);
     };
     res.status(200).send(reviews);
   } catch (error) {
@@ -20,5 +19,15 @@ exports.getReviews = async (req, res) => {
     res.status(400).send(error);
   }
 };
+
+exports.getReviewMeta = async (req, res) => {
+  try {
+    const reviewMetadata = await model.getReviewMetadata(req.query.product_id);
+    res.status(200).send(reviewMetadata);
+  } catch {
+    console.log(error);
+    res.status(400).send(error);
+  }
+}
 
 

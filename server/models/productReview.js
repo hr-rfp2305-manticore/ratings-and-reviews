@@ -1,10 +1,10 @@
-const { db, Review } = require('../../database/index.js');
+const { db, Review, ReviewMetadata } = require('../../database/index.js');
 
 exports.getProductReviews = (product_id) => {
     return Review.findOne({ product_id: product_id});
 };
 
-exports.getSortedReviews = (sort_by_field='newest', number) => {
+exports.getSortedReviews = (sort_by_field, number) => {
   if (sort_by_field === 'newest') {
     return Review.find({}).sort({'_id': -1}).limit(number);
   } else if (sort_by_field === 'helpful') {
@@ -19,3 +19,7 @@ exports.getSortedReviews = (sort_by_field='newest', number) => {
     */
   }
 };
+
+exports.getReviewMetadata = (product_id) => {
+  return ReviewMetadata.find({product_id: product_id})
+}

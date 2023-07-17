@@ -32,52 +32,54 @@ const reviewSchema = new mongoose.Schema({
   ]
 });
 
-// // product review metadata schema
-// const reviewMetadataSchema = new mongoose.Schema({
-//   "product_id": { type: Number, unique: true },
-//   "ratings": {
-// 		1: Number,
-//     2: Number,
-//     3: Number,
-//     4: Number,
-//     5: Number
-//   },
-//   "recommended": {
-//     true: Number,
-//     false: Number
-//   },
-//   "characteristics": {
-//     "Size": {
-//       "id": Number,
-//       "value": { total: Number, count: Number}
-//     },
-//     "Width": {
-//       "id": Number,
-//       "value": { total: Number, count: Number}
-//     },
-//     "Comfort": {
-//       "id": Number,
-//       "value": { total: Number, count: Number}
-//     },
-//     "Quality": {
-// 			"id": Number,
-// 			"value": { total: Number, count: Number}
-// 		},
-//     "Fit": {
-// 			"id": Number,
-// 			"value": { total: Number, count: Number}
-//     },
-//     "Length": {
-// 			"id": Number,
-// 			"value": { total: Number, count: Number}
-// 		}
-//   }
-// });
+// product review metadata schema
+const reviewMetadataSchema = new mongoose.Schema({
+  "product_id": { type: Number, unique: true },
+  "ratings": {
+		1: Number,
+    2: Number,
+    3: Number,
+    4: Number,
+    5: Number
+  },
+  "recommended": {
+    1: Number,
+    0: Number
+  },
+  "characteristics": {
+    "Size": {
+      "id": Number,
+      "value": Number
+    },
+    "Width": {
+      "id": Number,
+      "value": Number
+    },
+    "Comfort": {
+      "id": Number,
+      "value": Number
+    },
+    "Quality": {
+			"id": Number,
+			"value": Number
+		},
+    "Fit": {
+			"id": Number,
+			"value": Number
+    },
+    "Length": {
+			"id": Number,
+			"value": Number
+		}
+  }
+});
+
+
 
 
 module.exports = {
   db: db,
   // compile schema into a Model (a class with which we construct documents)
   Review:  mongoose.model('Review', reviewSchema, 'product_reviews'), // specify collection: 'product_reviews'
-  // ReviewMetadata: mongoose.model('ReviewMetadata', reviewMetadataSchema),
+  ReviewMetadata: mongoose.model('ReviewMetadata', reviewMetadataSchema,'reviews_meta'),
 };
