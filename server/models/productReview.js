@@ -146,8 +146,8 @@ exports.markReviewReported = async (review_id) => {
     // delete from product_reviews collection (the data in this collection has been filtered by `reported`)
     return db.collection('product_reviews')
       .updateOne(
-        { },
-        { $pull: { 'results': { 'review_id': review_id } } }  //TODO: Fix bug, this is not working
+        { results: { $elemMatch: {review_id: review_id } } },
+        { $pull: { 'results': { 'review_id': review_id } } }
       );
   } catch (error) {
     console.log(error);
