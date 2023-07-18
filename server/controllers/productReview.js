@@ -9,7 +9,8 @@ exports.getReviews = async (req, res) => {
   const number = page * count;
   try {
     if (queryParams.length === 1 && queryParams.includes('product_id')) {
-      reviews = await model.getProductReviews(req.query.product_id);
+      const product_id = Number(req.query.product_id);
+      reviews = await model.getProductReviews(product_id);
     } else {
       reviews = await model.getSortedReviews('newest', number);
     };
@@ -17,12 +18,13 @@ exports.getReviews = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(400).send(error);
-  }
+  };
 };
 
 exports.getReviewMeta = async (req, res) => {
+  const product_id = Number(req.query.product_id);
   try {
-    const reviewMetadata = await model.getReviewMetadata(req.query.product_id);
+    const reviewMetadata = await model.getReviewMetadata(product_id);
     res.status(200).send(reviewMetadata);
   } catch {
     console.log(error);
@@ -32,8 +34,10 @@ exports.getReviewMeta = async (req, res) => {
 
 exports.postReview = async (req, res) => {
   try {
+    console.time('add a product review to db')
     await model.addProductReview(req.body);
     // TODO: add to characteristic
+    console.timeEnd('add a product review to db')
     res.sendStatus(200);
   } catch (error) {
     console.log(error);
@@ -42,7 +46,7 @@ exports.postReview = async (req, res) => {
 };
 
 exports.putReviewHelpful = async (req, res) => {
-  const review_id = req.params.review_id;
+  const review_id = Number(req.params.review_id);
   try {
     await model.markReviewHelpful(review_id);
     res.sendStatus(204);
@@ -53,7 +57,7 @@ exports.putReviewHelpful = async (req, res) => {
 };
 
 exports.putReviewReported = async (req, res) => {
-  const review_id = req.params.review_id;
+  const review_id = Number(req.params.review_id);
   try {
     await model.markReviewReported(review_id);
     res.sendStatus(204);
