@@ -3,17 +3,13 @@ const model = require('../models/productReview.js');
 exports.getReviews = async (req, res) => {
   let reviews = null;
   const queryParams = Object.keys(req.query);
+  const product_id = Number(req.query.product_id);
   const sort_by_field = req.query.sort || 'relevant';
-  const page = req.query.page || 1;
-  const count = req.query.count || 5;
-  const number = page * count;
+  const page = Number(req.query.page) || 1;
+  const count = Number(req.query.count) || 5;
   try {
-    if (queryParams.length === 1 && queryParams.includes('product_id')) {
-      const product_id = Number(req.query.product_id);
-      reviews = await model.getProductReviews(product_id);
-    } else {
-      reviews = await model.getSortedReviews('newest', number);
-    };
+    reviews = await model.getProductReviews(product_id, 'newest', page, count);
+    console.log('reviews: ', reviews);
     res.status(200).send(reviews);
   } catch (error) {
     console.log(error);
@@ -65,4 +61,4 @@ exports.putReviewReported = async (req, res) => {
     console.log(error);
     res.status(400).send(error);
   };
-}
+};
