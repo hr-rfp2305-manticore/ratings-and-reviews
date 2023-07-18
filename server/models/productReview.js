@@ -18,27 +18,23 @@ exports.getProductReviews = async (product_id, sort_by_field, page, count) => {
     const db = await connectDb();
     const document = await db.collection('product_reviews').findOne({ product_id: product_id });
     if (document) {
-      if (sort_by_field === 'relavant') {
-        /*
-        TODO:
-        This sort order will prioritize reviews that have been found helpful. The order can be found by subtracting “No” responses from “Yes” responses and sorting such that the highest score appears at the top.
-        */
-        // return  document.results.sort((a, b) => b.review_id - a.review_id).slice(0, number);
+      let results;
+      if (sort_by_field === 'helpful') {
+        results = document.results.sort((a, b) => b.helpfulness - a.helpfulness).slice(0, page * count);
       } else if (sort_by_field === 'newest') {
-        var results =  document.results.sort((a, b) => b.review_id - a.review_id).slice(0, page * count);
-        return ({
-          product: product_id,
-          page: page,
-          count: count,
-          results: results
-        });
-      } else if (sort_by_field === 'helpful') {
+        results =  document.results.sort((a, b) => b.date - a.date).slice(0, page * count);
+      } else if (sort_by_field === 'relevant') {
         /*
-        TODO:
         Relevance will be determined by a combination of both the date that the review was submitted as well as ‘helpfulness’ feedback received. This combination should weigh the two characteristics such that recent reviews appear near the top, but do not outweigh reviews that have been found helpful. Similarly, reviews that have been helpful should appear near the top, but should yield to more recent reviews if they are older.
         */
-        // return  document.results.sort((a, b) => b.review_id - a.review_id).slice(0, number);
+       // return  document.results.sort((a, b) => b.review_id - a.review_id).slice(0, number);
       }
+      return ({
+        product: product_id,
+        page: page,
+        count: count,
+        results: results
+      });
     } else {
       console.log('product does not exist: ', product_id);
     }

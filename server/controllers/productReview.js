@@ -8,7 +8,7 @@ exports.getReviews = async (req, res) => {
   const page = Number(req.query.page) || 1;
   const count = Number(req.query.count) || 5;
   try {
-    reviews = await model.getProductReviews(product_id, 'newest', page, count);
+    reviews = await model.getProductReviews(product_id, sort_by_field, page, count);
     console.log('reviews: ', reviews);
     res.status(200).send(reviews);
   } catch (error) {
@@ -21,7 +21,7 @@ exports.getReviewMeta = async (req, res) => {
   const product_id = Number(req.query.product_id);
   try {
     const reviewMetadata = await model.getReviewMetadata(product_id);
-    res.status(200).send(reviewMetadata);
+    res.status(200).send(reviewMetadata[0]);
   } catch {
     console.log(error);
     res.status(400).send(error);
@@ -34,7 +34,7 @@ exports.postReview = async (req, res) => {
     await model.addProductReview(req.body);
     // TODO: add to characteristic
     console.timeEnd('add a product review to db')
-    res.sendStatus(200);
+    res.sendStatus(201);
   } catch (error) {
     console.log(error);
     res.status(400).send(error);
