@@ -1,21 +1,20 @@
 const mongoose = require('mongoose');
 const { db } = require('./index.js');
 
+// reviews_photos schema
 const reviewsPhotosSchema = new mongoose.Schema({
-  "product_id": { type: Number, unique: true },
-  "photos": [
-    {
-      "id": { type: Number, unique: true },
-      "url": String
-    }
-  ]
+  id: { type: Number, unique: true },
+  review_id: Number,
+  url: String
 });
 
 // create indexes
-reviewsPhotosSchema.index({product_id: 1, photos_id: 1});
+reviewsPhotosSchema.index({id: 1, review_id: 1});
 // compile schema into a Model (a class with which we construct documents)
 const ReviewsPhotos = mongoose.model('ReviewsPhotos', reviewsPhotosSchema, 'reviews_photos');
 
+// perform aggregation on reviews_photos collection and
+// create a new collection reviews_photos_collection
 const createCollection = async () => {
   console.log('START')
   await ReviewsPhotos.aggregate(
@@ -28,11 +27,29 @@ const createCollection = async () => {
           }
         }
       },
-      { $addFields: { product_id: '$_id' } },
+      { $addFields: { review_id: '$_id' } },
       { $merge: 'reviews_photos_collection' }
     ]
-  );
-  console.log('reviews_photos_collection CREATED');
-}
+    );
+    console.log('reviews_photos_collection CREATED');
+  }
 
-createCollection();
+  createCollection();
+
+  // reviews_photos_collection schema
+  const reviewsPhotosCollectionSchema = new mongoose.Schema({
+    review_id:{ type: Number, unique: true },
+    photos: [
+      {
+        id: { type: Number, unique: true },
+        url: String
+      }
+    ]
+  });
+
+  // create indexes
+  reviewsPhotosCollectionSchema.index({review_id: 1});
+  // compile schema into a Model (a class with which we construct documents)
+  const ReviewsPhotosCollection = mongoose.model('ReviewsPhotosCollection', reviewsPhotosCollectionSchema, 'reviews_photos_collection');
+
+  module.exports = ReviewsPhotosCollection;
