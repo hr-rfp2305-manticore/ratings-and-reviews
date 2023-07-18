@@ -11,16 +11,7 @@ const connectDb = async () => {
   });
   console.log('connected to mongodb!')
   return db = client.db('hr-sdc-manticore');
-}
-
-// exports.getProductReviews = async (product_id) => {
-//   try {
-//     const db = await connectDb();
-//     return db.collection('product_reviews').findOne({product_id: product_id});
-//   } catch (error) {
-//     console.log(error);
-//   };
-// };
+};
 
 exports.getProductReviews = async (product_id, sort_by_field, page, count) => {
   try {
