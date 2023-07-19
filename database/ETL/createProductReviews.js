@@ -8,7 +8,7 @@ const createProductReviews = async () => {
   const db = client.db('hr-sdc-manticore');
 
   const reviews = db.collection('reviews');
-  await reviews.createIndex({ id: 1, results.review_id });
+  await reviews.createIndex({ id: 1, 'results.review_id': 1 });
 
   // start timer
   console.time('create product_reviews');

@@ -9,7 +9,6 @@ exports.getReviews = async (req, res) => {
   const count = Number(req.query.count) || 5;
   try {
     reviews = await model.getProductReviews(product_id, sort_by_field, page, count);
-    // console.log('reviews: ', reviews);
     res.status(200).send(reviews);
   } catch (error) {
     console.log(error);
@@ -32,7 +31,6 @@ exports.postReview = async (req, res) => {
   try {
     console.time('add a product review to db')
     await model.addProductReview(req.body);
-    // TODO: add to characteristic
     console.timeEnd('add a product review to db')
     res.sendStatus(201);
   } catch (error) {

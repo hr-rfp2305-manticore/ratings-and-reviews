@@ -6,11 +6,13 @@ const createCharacteristicCollection = require('./ETL/createCharacteristicCollec
 
 const aggregateData = async () => {
   try {
+    console.log('Start ETL')
     await createReviewsPhotosCollection();
     await createProductReviews();
     await createCharacteristicReviewsCollection();
     await createCharacteristicCollection();
     await createReviewsMetadata()
+    console.log('End ETL')
   } catch (error) {
     console.log(error);
   }
