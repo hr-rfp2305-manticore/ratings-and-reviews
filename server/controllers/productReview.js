@@ -9,7 +9,7 @@ exports.getReviews = async (req, res) => {
   const count = Number(req.query.count) || 5;
   try {
     reviews = await model.getProductReviews(product_id, sort_by_field, page, count);
-    console.log('reviews: ', reviews);
+    // console.log('reviews: ', reviews);
     res.status(200).send(reviews);
   } catch (error) {
     console.log(error);

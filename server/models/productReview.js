@@ -99,24 +99,44 @@ exports.getReviewMetadata = async (product_id) => {
 };
 
 exports.addProductReview = async (data) => {
-  // add to mongoDB collection `product_reviews`
-  // TODO: takes too long to get the latest reviewId
-  // TODO: add to (update) characteristics collection
+  // TODO: takes too long to get the latest review_id
   try {
     const db = await connectDb();
-    const reviewId = await db.collection('product_reviews').aggregate(
+    const review_id = await db.collection('product_reviews').aggregate(
       [
         { $unwind: { path: '$results' } },
-        { $count: 'product_id' }
+        {$group:{_id:null,count:{$sum:1}}}
       ]
     ).toArray();
-    console.log('review_id: ',reviewId );
-    const {product_id, name, ...review} = data;
 
-    return db.collection('product_reviews').updateOne(
-      { product_id: product_id },
-      { $push: { results: { review_id: reviewId[0].product_id + 1, reviewer_name: name, ...review } } }
+    const {product_id, characteristics, name, ...review} = data;
+
+    // add to (update) reviews_metadata
+    const review_metadata = await db.collection('reviews_metadata').findOne({ '_id': product_id });
+    review_metadata.ratings[data.rating]++;
+    review_metadata.recommended[data.recommend? 1: 0]++;
+    for (char in characteristics) {
+      review_metadata.characteristics[char].count++;
+      review_metadata.characteristics[char].total += characteristics[char];
+    }
+    await db.collection('reviews_metadata').replaceOne(
+      { _id: product_id },
+      review_metadata
     );
+
+    // add a new product review to product_reviews
+    await db.collection('product_reviews').updateOne(
+      { product_id: product_id },
+      { $push: { results: {
+        review_id: review_id[0].count + 1,
+        reviewer_name: name,
+        response: null,
+        date: new Date(),
+        helpfulness: 0,
+        ...review
+      } } }
+    );
+    return;
   } catch (error) {
     console.log(error);
   }
@@ -140,13 +160,13 @@ exports.markReviewReported = async (review_id) => {
     // change original data in reviews collection (this collection contains all data)
     db.collection('reviews').updateOne(
       { id: review_id },
-      { $set: {reported: "true" } }
-      );
+      { $set: { reported: "true" } }
+    );
 
     // delete from product_reviews collection (the data in this collection has been filtered by `reported`)
     return db.collection('product_reviews')
       .updateOne(
-        { results: { $elemMatch: {review_id: review_id } } },
+        { results: { $elemMatch: {review_id: review_id } } }, // find the document that consists the review_id
         { $pull: { 'results': { 'review_id': review_id } } }
       );
   } catch (error) {
