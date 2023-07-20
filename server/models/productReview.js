@@ -37,8 +37,8 @@ exports.getProductReviews = async (product_id, sort_by_field, page, count) => {
       });
     } else {
       console.log('product does not exist: ', product_id);
+      return;
     }
-    return ;
   } catch (error) {
     console.log(error);
   };

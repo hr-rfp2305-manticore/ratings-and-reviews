@@ -9,6 +9,7 @@ exports.getReviews = async (req, res) => {
   const count = Number(req.query.count) || 5;
   try {
     reviews = await model.getProductReviews(product_id, sort_by_field, page, count);
+    reviews = reviews || `product id ${product_id} does not exits`
     res.status(200).send(reviews);
   } catch (error) {
     console.log(error);
