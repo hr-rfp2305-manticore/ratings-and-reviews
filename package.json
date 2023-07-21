@@ -21,6 +21,7 @@
   "homepage": "https://github.com/hr-rfp2305-manticore/ratings-and-reviews#readme",
   "dependencies": {
     "csv-parser": "^3.0.0",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "mongodb": "^5.7.0",
     "morgan": "^1.10.0"
