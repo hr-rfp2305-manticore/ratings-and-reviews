@@ -1,7 +1,8 @@
 const { MongoClient } = require('mongodb');
+require('dotenv').config();
 
 const createProductReviews = async () => {
-  const client = await MongoClient.connect('mongodb://localhost:27017', {
+  const client = await MongoClient.connect(`mongodb://${process.env.DB_HOST}:27017`, {
     useUnifiedTopology: true,
   });
 
