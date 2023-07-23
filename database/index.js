@@ -4,7 +4,6 @@ const createCharacteristicReviewsCollection = require('./ETL/createCharacteristi
 const createReviewsMetadata = require('./ETL/createReviewsMetadata.js');
 const createCharacteristicCollection = require('./ETL/createCharacteristicCollection.js');
 require('dotenv').config();
-console.log('env', 'test' + process.env.DB_HOST)
 
 const aggregateData = async () => {
   try {

@@ -20,7 +20,7 @@ export let options = {
 
 export default () => {
   const product_id = Math.floor(Math.random() * 10000);
-  const url = `http://localhost:3000/reviews?product_id=${product_id}`
+  const url = `http://${process.env.DB_HOST}/reviews?product_id=${product_id}`
 
   http.get(url);
 }
