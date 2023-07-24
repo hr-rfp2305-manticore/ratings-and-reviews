@@ -1,17 +1,47 @@
 const { MongoClient } = require('mongodb');
+require('dotenv').config();
 let db;
+let review_id;
 
 const connectDb = async () => {
   // if connected, returun
   if (db) {
     return db;
   }
-  const client = await MongoClient.connect('mongodb://localhost:27017', {
+  const client = await MongoClient.connect(`mongodb://${process.env.DB_HOST}:27017`, {
     useUnifiedTopology: true,
   });
   console.log('connected to mongodb!')
-  return db = client.db('hr-sdc-manticore');
+  db = client.db('hr-sdc-manticore');
+  return db
 };
+
+let reviewIdPromise = null;
+const getReviewId = async () => {
+  // if review
+  console.log('reviewIdPromise: ', reviewIdPromise)
+  if (!reviewIdPromise) {
+    const db = await connectDb();
+    console.time('get latest review_id');
+    reviewIdPromise = (async () => {
+      const id = await db.collection('product_reviews').aggregate(
+        [
+          { $unwind: { path: '$results' } },
+          { $group:{ _id: null, count:{ $sum:1 } } }
+        ]
+      ).toArray();
+      console.timeEnd('get latest review_id');
+      review_id = id[0].count;
+      console.log('review id: ', review_id)
+      return review_id;
+    })();
+  }
+  return reviewIdPromise;
+};
+
+// get current count of reviews in the db when the server loads,
+// so I know what the newest review_id should be when adding a review
+getReviewId();
 
 exports.getProductReviews = async (product_id, sort_by_field, page, count) => {
   try {
@@ -102,12 +132,9 @@ exports.addProductReview = async (data) => {
   // TODO: takes too long to get the latest review_id
   try {
     const db = await connectDb();
-    const review_id = await db.collection('product_reviews').aggregate(
-      [
-        { $unwind: { path: '$results' } },
-        {$group:{_id:null,count:{$sum:1}}}
-      ]
-    ).toArray();
+    const latest_review_id = review_id || await getReviewId();
+    review_id = latest_review_id + 1;
+    // console.log('latest review id: ', review_id)
 
     const {product_id, characteristics, name, ...review} = data;
 
@@ -128,7 +155,7 @@ exports.addProductReview = async (data) => {
     await db.collection('product_reviews').updateOne(
       { product_id: product_id },
       { $push: { results: {
-        review_id: review_id[0].count + 1,
+        review_id: review_id,
         reviewer_name: name,
         response: null,
         date: new Date(),
